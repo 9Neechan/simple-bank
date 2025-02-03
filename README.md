@@ -7,3 +7,19 @@
 Схема БД: https://dbdiagram.io/d/Simple-Bank-67a02f0e263d6cf9a0cb4365 
 
 ![alt text](imgs/db_scheme.png)
+
+
+Создание миграций
+
+```brew install golang-migrate```
+```brew install kyleconroy/sqlc/sqlc```
+
+Docker команды
+
+```docker start postgres12```
+```docker stop postgres12```
+
+```select * from schema_migrations;```
+
+
+```sqlc init```
