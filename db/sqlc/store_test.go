@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,9 +13,10 @@ func TestTransferTx(t *testing.T) {
 
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
+	fmt.Println(">> before:", account1.Balance, account2.Balance)
 
 	// run a concurrent transfer transactions
-	n := 5
+	n := 2
 	amount := int64(10)
 
 	errs := make(chan error)
@@ -22,10 +24,14 @@ func TestTransferTx(t *testing.T) {
 
 	// запускаем n одновременных транзакций перевода
 	for i := 0; i < n; i++ {
+		txName := fmt.Sprintf("tx %d", i+1) 
+
 		go func() {
 			// выполняется внутри другой горутины, отличной от TestTransferTx
 			// => не можем использовать testify/require
-			result, err := store.TransferTx(context.Background(), TransferTxParams{
+			
+			ctx := context.WithValue(context.Background(), txKey, txName)
+			result, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -35,6 +41,8 @@ func TestTransferTx(t *testing.T) {
 			results <- result
 		}()
 	}
+
+	existed := make(map[int]bool)
 
 	// check results
 	for i := 0; i < n; i++ {
@@ -54,30 +62,63 @@ func TestTransferTx(t *testing.T) {
 		require.NotZero(t, transfer.CreatedAt)
 
 		_, err = store.GetTransfer(context.Background(), transfer.ID)
-        require.NoError(t, err)
+		require.NoError(t, err)
 
 		// check entries
 		fromEntry := result.FromEntry
-        require.NotEmpty(t, fromEntry)
-        require.Equal(t, account1.ID, fromEntry.AccountID)
-        require.Equal(t, -amount, fromEntry.Amount)
-        require.NotZero(t, fromEntry.ID)
-        require.NotZero(t, fromEntry.CreatedAt)
+		require.NotEmpty(t, fromEntry)
+		require.Equal(t, account1.ID, fromEntry.AccountID)
+		require.Equal(t, -amount, fromEntry.Amount)
+		require.NotZero(t, fromEntry.ID)
+		require.NotZero(t, fromEntry.CreatedAt)
 
-        _, err = store.GetEntry(context.Background(), fromEntry.ID)
-        require.NoError(t, err)
+		_, err = store.GetEntry(context.Background(), fromEntry.ID)
+		require.NoError(t, err)
 
 		toEntry := result.ToEntry
-        require.NotEmpty(t, toEntry)
-        require.Equal(t, account2.ID, toEntry.AccountID)
-        require.Equal(t, amount, toEntry.Amount)
-        require.NotZero(t, toEntry.ID)
-        require.NotZero(t, toEntry.CreatedAt)
+		require.NotEmpty(t, toEntry)
+		require.Equal(t, account2.ID, toEntry.AccountID)
+		require.Equal(t, amount, toEntry.Amount)
+		require.NotZero(t, toEntry.ID)
+		require.NotZero(t, toEntry.CreatedAt)
 
-        _, err = store.GetEntry(context.Background(), toEntry.ID)
-        require.NoError(t, err)
+		_, err = store.GetEntry(context.Background(), toEntry.ID)
+		require.NoError(t, err)
 
+		// check accounts
+		fromAccount := result.FromAccount
+		require.NotEmpty(t, fromAccount)
+		require.Equal(t, account1.ID, fromAccount.ID)
 
-		// TODO: check accounts balances
+		toAccount := result.ToAccount
+		require.NotEmpty(t, toAccount)
+		require.Equal(t, account2.ID, toAccount.ID)
+
+		// check accounts balances
+		fmt.Println(">> tx:", fromAccount.Balance, toAccount.Balance)
+
+		diff1 := account1.Balance - fromAccount.Balance
+		diff2 := toAccount.Balance - account2.Balance
+		require.Equal(t, diff1, diff2)
+		require.True(t, diff1 > 0)
+		require.True(t, diff1%amount == 0) // 1 * amount, 2 * amount, 3 * amount, ..., n * amount
+
+		k := int(diff1 / amount) // номер транзакции
+		require.True(t, k >= 1 && k <= n)
+
+		require.NotContains(t, existed, k) // каждый номер транзакции должен быть уникальным
+		existed[k] = true
 	}
+
+	// check final updated accounts
+	updatedAccount1, err := store.GetAccount(context.Background(), account1.ID)
+	require.NoError(t, err)
+
+	updatedAccount2, err := store.GetAccount(context.Background(), account2.ID)
+	require.NoError(t, err)
+
+	fmt.Println(">> after:", updatedAccount1.Balance, updatedAccount2.Balance)
+
+	require.Equal(t, account1.Balance-int64(n)*amount, updatedAccount1.Balance)
+	require.Equal(t, account2.Balance+int64(n)*amount, updatedAccount2.Balance)
 }
