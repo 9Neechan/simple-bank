@@ -15,9 +15,9 @@ const (
 )
 
 var testQueries *Queries
-//var testDB *sql.DB
+var testDB *sql.DB
 
-func TestMain(m *testing.M) {
+/*func TestMain(m *testing.M) {
 	conn, err := sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
@@ -26,10 +26,11 @@ func TestMain(m *testing.M) {
 	testQueries = New(conn)
 
 	os.Exit(m.Run())
-}
+}*/
 
-/*func TestMain(m *testing.M) {
+func TestMain(m *testing.M) {
 	var err error
+	
 	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
@@ -38,4 +39,4 @@ func TestMain(m *testing.M) {
 	testQueries = New(testDB)
 
 	os.Exit(m.Run())
-}*/
+}
