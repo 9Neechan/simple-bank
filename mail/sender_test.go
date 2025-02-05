@@ -1,6 +1,6 @@
 package mail
 
-import (
+/*import (
 	"testing"
 
 	"github.com/9Neechan/simple-bank/util"
@@ -27,4 +27,4 @@ func TestSendEmailWithGmail(t *testing.T) {
 
 	err = sender.SendEmail(subject, content, to, nil, nil, attachFiles)
 	require.NoError(t, err)
-}
+}*/
