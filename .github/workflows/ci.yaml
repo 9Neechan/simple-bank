@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:17
+        image: postgres:12
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: secret
@@ -52,4 +52,4 @@ jobs:
       run: make migrateup
 
     - name: Test
-      run: go test -v ./...
+      run: make test
