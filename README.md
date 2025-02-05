@@ -12,14 +12,19 @@
 Создание миграций
 
 ```brew install golang-migrate```
+
 ```brew install kyleconroy/sqlc/sqlc```
+
+```sqlc init```
 
 Docker команды
 
 ```docker start postgres12```
+
 ```docker stop postgres12```
+
+---------------------------------------
 
 ```select * from schema_migrations;```
 
 
-```sqlc init```
