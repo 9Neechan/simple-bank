@@ -33,6 +33,7 @@ jobs:
     steps:
     - name: Create app.env file
       run: |
+        touch app.env 
         echo "DB_DRIVER=postgres" >> app.env
         echo "DB_SOURCE=${{ secrets.DB_SOURCE }}" >> app.env
         echo "SERVER_ADDRESS=0.0.0.0:8080" >> app.env
@@ -47,6 +48,9 @@ jobs:
         echo "ACCESS_TOKEN_DURATION=15m" >> app.env
         echo "REFRESH_TOKEN_DURATION=24h" >> app.env
         echo "REDIS_ADDRESS=0.0.0.0:6379" >> app.env
+
+    - name: Check if .env exists
+      run: ls -la | grep app.env || echo "app.env file not found"
 
     - name: Set up Go
       uses: actions/setup-go@v4
