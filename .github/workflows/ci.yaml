@@ -50,10 +50,10 @@ jobs:
         echo "REDIS_ADDRESS=0.0.0.0:6379" >> app.env
 
     - name: Check if .env exists
-      run: ls -la | grep app.env || echo "app.env file not found" | cat app.env
-    
-    - name: Move config file
-      run: mv app.env /home/runner/work/simple-bank/simple-bank/
+      run: ls -la | grep app.env || echo "app.env file not found" 
+
+    - name: Show app.env
+      run: cat app.env
     
     - name: Show files
       run: ls -la
