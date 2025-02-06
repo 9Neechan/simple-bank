@@ -55,7 +55,7 @@ jobs:
     - name: Move config file
       run: mv app.env /home/runner/work/simple-bank/simple-bank/
     
-    - name: Debug: Show files
+    - name: Show files
       run: ls -la
 
     - name: Set up Go
