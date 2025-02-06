@@ -1,6 +1,7 @@
 package mail
 
-/*import (
+import (
+	"log"
 	"testing"
 
 	"github.com/9Neechan/simple-bank/util"
@@ -12,8 +13,10 @@ func TestSendEmailWithGmail(t *testing.T) {
 		t.Skip()
 	}
 
-	config, err := util.LoadConfig("..")
-	require.NoError(t, err)
+	config, err := util.LoadConfig("../")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
 
 	sender := NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 
@@ -27,4 +30,4 @@ func TestSendEmailWithGmail(t *testing.T) {
 
 	err = sender.SendEmail(subject, content, to, nil, nil, attachFiles)
 	require.NoError(t, err)
-}*/
+}
