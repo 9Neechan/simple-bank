@@ -34,7 +34,7 @@ jobs:
     - name: Create app.env file
       run: |
         touch app.env 
-        echo "DB_DRIVER=postgres" >> app.env
+        echo "DB_DRIVER=postgres" > app.env
         echo "DB_SOURCE=${{ secrets.DB_SOURCE }}" >> app.env
         echo "SERVER_ADDRESS=0.0.0.0:8080" >> app.env
         echo "EMAIL_SENDER_NAME=Simple Bank" >> app.env
@@ -51,6 +51,13 @@ jobs:
 
     - name: Check if .env exists
       run: ls -la | grep app.env || echo "app.env file not found"
+    
+    - name: Move config file
+      run: mv app.env /home/runner/work/simple-bank/simple-bank/
+    
+    - name: Debug: Show files
+      run: ls -la
+
 
     - name: Set up Go
       uses: actions/setup-go@v4
