@@ -9,10 +9,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  EMAIL_SENDER_ADRESS: ${{ secrets.EMAIL_SENDER_ADRESS}}
-  EMAIL_SENDER_PASSWORD: ${{ secrets.EMAIL_SENDER_PASSWORD}}
-
 jobs:
 
   test:
@@ -35,6 +31,23 @@ jobs:
           --health-retries 5
     
     steps:
+    - name: Create app.env file
+      run: |
+        echo "DB_DRIVER=postgres" > app.env
+        echo "DB_SOURCE=${{ secrets.DB_SOURCE }}" >> app.env
+        echo "SERVER_ADDRESS=0.0.0.0:8080" >> app.env
+        echo "EMAIL_SENDER_NAME=Simple Bank" >> app.env
+        echo "EMAIL_SENDER_ADDRESS=${{ secrets.EMAIL_SENDER_ADDRESS }}" >> app.env
+        echo "EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }}" >> app.env
+        echo "ENVIRONMENT=development" >> app.env
+        echo "MIGRATION_URL=file://db/migration" >> app.env
+        echo "HTTP_SERVER_ADDRESS=0.0.0.0:8080" >> app.env
+        echo "GRPC_SERVER_ADDRESS=0.0.0.0:9090" >> app.env
+        echo "TOKEN_SYMMETRIC_KEY=${{ secrets.TOKEN_SYMMETRIC_KEY }}" >> app.env
+        echo "ACCESS_TOKEN_DURATION=15m" >> app.env
+        echo "REFRESH_TOKEN_DURATION=24h" >> app.env
+        echo "REDIS_ADDRESS=0.0.0.0:6379" >> app.env
+        
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
