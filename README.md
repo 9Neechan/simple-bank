@@ -26,5 +26,3 @@ Docker команды
 ---------------------------------------
 
 ```select * from schema_migrations;```
-
-
