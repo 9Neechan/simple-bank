@@ -6,7 +6,7 @@
 
 Схема БД: https://dbdiagram.io/d/Simple-Bank-67a02f0e263d6cf9a0cb4365 
 
-![alt text](imgs/db_scheme.png)
+![alt text](imgs/db_scheme.jpg)
 
 
 Создание миграций
@@ -26,3 +26,7 @@ Docker команды
 ---------------------------------------
 
 ```select * from schema_migrations;```
+
+```update schema_migrations 
+set dirty = false
+where dirty = true;```
