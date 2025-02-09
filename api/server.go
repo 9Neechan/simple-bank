@@ -2,10 +2,10 @@ package api
 
 import (
 	db "github.com/9Neechan/simple-bank/db/sqlc"
-	
-	"github.com/go-playground/validator/v10"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 type Server struct {
@@ -21,6 +21,7 @@ func NewServer(store db.Store) *Server { // *
 		v.RegisterValidation("currency", validCurrency)
 	}
 
+	router.POST("/users", server.createUser)         // http://localhost:8080/users
 	router.POST("/accounts", server.createAccount)   // http://localhost:8080/accounts
 	router.GET("/accounts/:id", server.getAccount)   // http://localhost:8080/accounts/214
 	router.GET("/accounts", server.listAccounts)     // http://localhost:8080/accounts?page_id=1&page_size=5

@@ -30,3 +30,8 @@ Docker команды
 ```update schema_migrations 
 set dirty = false
 where dirty = true;```
+
+
+------------------
+
+make sqlc -> make mock
