@@ -1,3 +1,5 @@
+// TODO: GetUser
+
 package api
 
 import (
