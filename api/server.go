@@ -20,6 +20,7 @@ type Server struct {
 }
 
 func NewServer(config util.Config, store db.Store) (*Server, error) {
+	// tokenMaker, err := token.NewJWTMaker(config.TokenSymmetricKey)
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
@@ -42,14 +43,15 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.POST("/users", server.createUser)
+	router.POST("/users", server.createUser)      // http://localhost:8080/users
+	router.POST("/users/login", server.loginUser) // http://localhost:8080/users/login
 
-	authRoutes := router.Group("/")//.Use(authMiddleware(server.tokenMaker))
-	authRoutes.POST("/accounts", server.createAccount)
-	authRoutes.GET("/accounts/:id", server.getAccount)
-	authRoutes.GET("/accounts", server.listAccounts)
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+	authRoutes.POST("/accounts", server.createAccount) // http://localhost:8080/accounts
+	authRoutes.GET("/accounts/:id", server.getAccount) // http://localhost:8080/accounts/214
+	authRoutes.GET("/accounts", server.listAccount)   // http://localhost:8080/accounts?page_id=1&page_size=5
 
-	authRoutes.POST("/transfers", server.createTransfer)
+	authRoutes.POST("/transfers", server.createTransfer) // http://localhost:8080/transfers
 
 	server.router = router
 }
