@@ -16,7 +16,7 @@ type Server struct {
 	config     util.Config
 	store      db.Store // *
 	tokenMaker token.Maker
-	router     *gin.Engine
+	router     *gin.Engine 
 }
 
 func NewServer(config util.Config, store db.Store) (*Server, error) {
