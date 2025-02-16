@@ -16,7 +16,7 @@ type Server struct {
 	config     util.Config
 	store      db.Store // *
 	tokenMaker token.Maker
-	router     *gin.Engine 
+	router     *gin.Engine
 }
 
 func NewServer(config util.Config, store db.Store) (*Server, error) {
@@ -43,13 +43,14 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.POST("/users", server.createUser)      // http://localhost:8080/users
-	router.POST("/users/login", server.loginUser) // http://localhost:8080/users/login
+	router.POST("/users", server.createUser)                    // http://localhost:8080/users
+	router.POST("/users/login", server.loginUser)               // http://localhost:8080/users/login
+	router.POST("/token/renew_access", server.renewAccessToken) // http://localhost:8080/tokens/renew_access
 
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 	authRoutes.POST("/accounts", server.createAccount) // http://localhost:8080/accounts
 	authRoutes.GET("/accounts/:id", server.getAccount) // http://localhost:8080/accounts/214
-	authRoutes.GET("/accounts", server.listAccount)   // http://localhost:8080/accounts?page_id=1&page_size=5
+	authRoutes.GET("/accounts", server.listAccount)    // http://localhost:8080/accounts?page_id=1&page_size=5
 
 	authRoutes.POST("/transfers", server.createTransfer) // http://localhost:8080/transfers
 
