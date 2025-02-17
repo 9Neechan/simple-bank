@@ -6,6 +6,8 @@
 
 Схема БД: https://dbdiagram.io/d/Simple-Bank-67a02f0e263d6cf9a0cb4365 
 
+DB documentation: https://dbdocs.io/madwave.1312/simple_bank 
+
 ![alt text](imgs/db_scheme.jpg)
 
 
@@ -41,3 +43,6 @@ where dirty = true;```
 ------------------
 
 make sqlc -> make mock
+
+
+```dbdocs password --set secret --project simple_bank``` - set password to dbdocs

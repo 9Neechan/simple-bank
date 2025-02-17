@@ -1,5 +1,3 @@
-// TODO: TestGetUserAPI
-
 package api
 
 import (
